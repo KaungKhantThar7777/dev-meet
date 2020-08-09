@@ -1,10 +1,10 @@
 import React, { useState, useContext } from "react";
 import Axios from "axios";
-import ExampleContext from "../ExampleContext";
+import DispatchContext from "../DispatchContext";
 const HeaderLoggedOut = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const { setLoggedIn } = useContext(ExampleContext);
+  const dispatch = useContext(DispatchContext);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -14,12 +14,9 @@ const HeaderLoggedOut = () => {
         password,
       });
       if (res.data) {
-        localStorage.setItem("dev-meet-token", res.data.token);
-        localStorage.setItem("dev-meet-name", res.data.username);
-        localStorage.setItem("dev-meet-avatar", res.data.avatar);
-        setLoggedIn(true);
+        dispatch({ type: "login", payload: res.data });
       } else {
-        setLoggedIn(false);
+        dispatch({ type: "logout" });
       }
       console.log(res);
     } catch (err) {
