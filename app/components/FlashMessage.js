@@ -7,8 +7,8 @@ const FlashMessage = () => {
     return null;
   }
   return (
-    <div className="floating-alerts">
-      <div className="alert alert-success text-center floating-alert shadow-sm">
+    <div className="floating-alerts mx-auto">
+      <div className="alert alert-success w-100 text-center floating-alert shadow-sm">
         {flashMessage}
       </div>
     </div>

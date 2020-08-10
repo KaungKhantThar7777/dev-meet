@@ -18,7 +18,11 @@ import About from "./components/About";
 import Terms from "./components/Terms";
 import CreatePost from "./components/CreatePost";
 import ViewSinglePost from "./components/ViewSinglePost";
+import EditPost from "./components/EditPost";
 import FlashMessage from "./components/FlashMessage";
+import Profile from "./components/Profile";
+import NotFound from "./components/NotFound";
+import Search from "./components/Search";
 
 import StateContext from "./StateContext";
 import DispatchContext from "./DispatchContext";
@@ -34,6 +38,7 @@ const Main = () => {
       username: localStorage.getItem("dev-meet-name"),
       avatar: localStorage.getItem("dev-meet-avatar"),
     },
+    isSearchOpen: false,
   };
   const ourReducer = (draft, action) => {
     switch (action.type) {
@@ -48,6 +53,11 @@ const Main = () => {
       case "flashMessage":
         draft.flashMessage = action.payload;
         return;
+      case "openSearch":
+        draft.isSearchOpen = true;
+        return;
+      case "closeSearch":
+        draft.isSearchOpen = false;
       default:
         return;
     }
@@ -57,7 +67,7 @@ const Main = () => {
   useEffect(() => {
     if (state.loggedIn) {
       localStorage.setItem("dev-meet-token", state.user.token);
-      debugger;
+
       localStorage.setItem("dev-meet-name", state.user.username);
       localStorage.setItem("dev-meet-avatar", state.user.avatar);
     } else {
@@ -65,31 +75,48 @@ const Main = () => {
       localStorage.removeItem("dev-meet-name");
       localStorage.removeItem("dev-meet-avatar");
     }
-    debugger;
   }, [state.loggedIn]);
   return (
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>
         <Router>
           <FlashMessage />
-          <Header />
-          <Switch>
-            <Route
-              exact
-              path="/"
-              render={() =>
-                state.loggedIn ? <Home /> : <HomeGuest />
-              }
-            />
-            <Route exact path="/create-post" component={CreatePost} />
-            <Route
-              exact
-              path="/posts/:id"
-              component={ViewSinglePost}
-            />
-            <Route exact path="/about-us" component={About} />
-            <Route exact path="/terms" component={Terms} />
-          </Switch>
+          <div>
+            <Header />
+            <Switch>
+              <Route
+                exact
+                path="/profile/:username"
+                component={Profile}
+              />
+              <Route
+                exact
+                path="/"
+                render={() =>
+                  state.loggedIn ? <Home /> : <HomeGuest />
+                }
+              />
+              <Route
+                exact
+                path="/create-post"
+                component={CreatePost}
+              />
+              <Route
+                exact
+                path="/posts/:id"
+                component={ViewSinglePost}
+              />
+              <Route
+                exact
+                path="/posts/:id/edit"
+                component={EditPost}
+              />
+              <Route exact path="/about-us" component={About} />
+              <Route exact path="/terms" component={Terms} />
+              <Route component={NotFound} />
+            </Switch>
+          </div>
+          {state.isSearchOpen && <Search />}
           <Footer />
         </Router>
       </DispatchContext.Provider>

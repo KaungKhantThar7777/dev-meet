@@ -5,7 +5,7 @@ const Home = () => {
   const { user } = useContext(StateContext);
   return (
     <Page title="You Feed">
-      <h2 className="text-center">
+      <h2 className="text-center mt-5">
         Hello <strong>{user.username}</strong>, your feed is empty.
       </h2>
       <p className="lead text-muted text-center">

@@ -239,7 +239,7 @@ textarea.tall-textarea {
 .live-search-field {
   background-color: transparent;
   border: none;
-  font-size: 1.1rem;
+  font-size: 1rem;
   outline: none;
   flex: 1;
   color: #007bff;
@@ -283,15 +283,15 @@ textarea.tall-textarea {
 
 @media (min-width: 700px) {
   .live-search-field {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
 
   .close-live-search {
-    font-size: 3rem;
+    font-size: 2.5rem;
   }
 
   .search-overlay-icon {
-    font-size: 3rem;
+    font-size: 2.5rem;
   }
 }
 
@@ -445,6 +445,12 @@ textarea.tall-textarea {
   font-size: 0.75rem;
 }
 
+.floating-alerts {
+  position: absolute;
+  left: 35%;
+  width: 25rem;
+}
+
 .floating-alert {
   display: none;
   position: absolute;
@@ -464,6 +470,10 @@ textarea.tall-textarea {
   display: block;
 }
 
+.not-found {
+  font-size: 2.4rem;
+  font-weight: 300;
+}
 @keyframes floatingAlert {
   0% {
     opacity: 0;

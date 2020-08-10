@@ -9,18 +9,26 @@ const HeaderLoggedIn = () => {
   };
   const dispatch = useContext(DispatchContext);
   const { user } = useContext(StateContext);
+  const handleSearchOpen = (e) => {
+    e.preventDefault();
+
+    dispatch({ type: "openSearch" });
+  };
   return (
     <div className="flex-row my-3 my-md-0 mr-3">
-      <a href="#" className="text-white mr-3 header-search-icon">
+      <a
+        href="#"
+        onClick={handleSearchOpen}
+        className="text-white mr-3 header-search-icon">
         <i className="fas fa-search"></i>
       </a>
       <span className="mr-3 header-chat-icon text-white">
         <i className="fas fa-comment"></i>
         <span className="chat-count-badge text-white"> </span>
       </span>
-      <a href="#" className="mr-3">
+      <Link to={`/profile/${user.username}`} className="mr-3">
         <img className="small-header-avatar" src={user.avatar} />
-      </a>
+      </Link>
       <Link className="btn btn-sm btn-info mr-2" to="/create-post">
         Create Post
       </Link>
