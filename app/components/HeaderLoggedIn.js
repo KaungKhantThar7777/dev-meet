@@ -9,7 +9,7 @@ const HeaderLoggedIn = () => {
     dispatch({ type: "logout" });
   };
   const dispatch = useContext(DispatchContext);
-  const { user } = useContext(StateContext);
+  const { user, unreadChatCount } = useContext(StateContext);
   const handleSearchOpen = (e) => {
     e.preventDefault();
 
@@ -27,11 +27,16 @@ const HeaderLoggedIn = () => {
       </a>
       <ReactTooltip place="bottom" id="search" />
       <span
+        onClick={() => dispatch({ type: "toggleChat" })}
         data-tip="Chat"
         data-for="chat"
         className="mr-3 header-chat-icon text-white">
         <i className="fas fa-comment"></i>
-        <span className="chat-count-badge text-white"> </span>
+        {unreadChatCount > 0 && (
+          <span className="chat-count-badge bg-info text-white">
+            {unreadChatCount}{" "}
+          </span>
+        )}
       </span>
       <ReactTooltip place="bottom" id="chat" />
       <Link

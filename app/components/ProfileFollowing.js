@@ -4,20 +4,21 @@ import Axios from "axios";
 import Moment from "react-moment";
 import LoadingDotsIcon from "./LoadingDotsIcon";
 
-const ProfilePosts = () => {
+const ProfileFollowing = () => {
   const { username } = useParams();
   const [isLoading, setIsLoading] = useState(true);
-  const [posts, setPosts] = useState([]);
+  const [following, setFollowing] = useState([]);
   useEffect(() => {
     const request = Axios.CancelToken.source();
-    async function fetchPosts() {
-      const profilePosts = await Axios.get(
-        `/profile/${username}/posts`
-      );
-      setPosts(profilePosts.data);
+    async function fetchfollowing() {
+      const res = await Axios.get(`/profile/${username}/following`, {
+        cancelToken: request.token,
+      });
+      console.log(res);
+      setFollowing(res.data);
       setIsLoading(false);
     }
-    fetchPosts();
+    fetchfollowing();
 
     return () => {
       request.cancel();
@@ -29,15 +30,14 @@ const ProfilePosts = () => {
 
   return (
     <div className="list-group">
-      {posts.map((post) => {
+      {following.map((following, index) => {
         return (
           <Link
-            key={post._id}
-            to={`/posts/${post._id}`}
+            key={index}
+            to={`/profile/${following.username}`}
             className="list-group-item list-group-item-action">
-            <img className="avatar-tiny" src={post.author.avatar} />
-            <strong>{post.title}</strong> on{" "}
-            {<Moment format="DD/MM/YYYY">{post.createdDate}</Moment>}
+            <img className="avatar-tiny" src={following.avatar} />
+            <span className="ml-2">{following.username}</span>
           </Link>
         );
       })}
@@ -45,4 +45,4 @@ const ProfilePosts = () => {
   );
 };
 
-export default ProfilePosts;
+export default ProfileFollowing;

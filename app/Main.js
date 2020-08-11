@@ -27,6 +27,7 @@ import Search from "./components/Search";
 import StateContext from "./StateContext";
 import DispatchContext from "./DispatchContext";
 import { CSSTransition } from "react-transition-group";
+import Chat from "./components/Chat";
 
 Axios.defaults.baseURL = "http://localhost:8080";
 
@@ -40,13 +41,15 @@ const Main = () => {
       avatar: localStorage.getItem("dev-meet-avatar"),
     },
     isSearchOpen: false,
+    isChatOpen: false,
+    unreadChatCount: 0,
   };
   const ourReducer = (draft, action) => {
     switch (action.type) {
       case "login":
         draft.loggedIn = true;
         draft.user = action.payload;
-        debugger;
+
         return;
       case "logout":
         draft.loggedIn = false;
@@ -59,6 +62,19 @@ const Main = () => {
         return;
       case "closeSearch":
         draft.isSearchOpen = false;
+        return;
+      case "toggleChat":
+        draft.isChatOpen = !draft.isChatOpen;
+        return;
+      case "closeChat":
+        draft.isChatOpen = false;
+        return;
+      case "increaseUnreadCount":
+        draft.unreadChatCount++;
+        return;
+      case "resetUnreadCount":
+        draft.unreadChatCount = 0;
+        return;
       default:
         return;
     }
@@ -85,11 +101,7 @@ const Main = () => {
           <div>
             <Header />
             <Switch>
-              <Route
-                exact
-                path="/profile/:username"
-                component={Profile}
-              />
+              <Route path="/profile/:username" component={Profile} />
               <Route
                 exact
                 path="/"
@@ -124,6 +136,7 @@ const Main = () => {
             unmountOnExit>
             <Search />
           </CSSTransition>
+          <Chat />
           <Footer />
         </Router>
       </DispatchContext.Provider>

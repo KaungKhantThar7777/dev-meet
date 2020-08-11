@@ -4,6 +4,7 @@ import { useImmer } from "use-immer";
 import Axios from "axios";
 import Moment from "react-moment";
 import { Link } from "react-router-dom";
+import Post from "./Post";
 const Search = () => {
   const dispatch = useContext(DispatchContext);
   const [state, setState] = useImmer({
@@ -32,7 +33,7 @@ const Search = () => {
         setState((draft) => {
           draft.requestCount++;
         });
-      }, 3000);
+      }, 750);
 
       return () => clearTimeout(delay);
     } else {
@@ -116,26 +117,10 @@ const Search = () => {
               </div>
               {state.results.map((post) => {
                 return (
-                  <Link
+                  <Post
+                    post={post}
                     onClick={() => dispatch({ type: "closeSearch" })}
-                    key={post._id}
-                    to={`/posts/${post._id}`}
-                    className="list-group-item list-group-item-action">
-                    <img
-                      className="avatar-tiny"
-                      src={post.author.avatar}
-                    />
-                    <strong>{post.title}</strong>{" "}
-                    <span className="text-muted small">
-                      by {post.author.username}
-                    </span>{" "}
-                    on{" "}
-                    {
-                      <Moment format="DD/MM/YYYY">
-                        {post.createdDate}
-                      </Moment>
-                    }
-                  </Link>
+                  />
                 );
               })}
             </div>
