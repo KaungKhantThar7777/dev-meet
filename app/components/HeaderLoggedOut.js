@@ -14,9 +14,17 @@ const HeaderLoggedOut = () => {
         password,
       });
       if (res.data) {
+        dispatch({
+          type: "flashMessage",
+          payload: "Successfully Logged In",
+        });
         dispatch({ type: "login", payload: res.data });
       } else {
         dispatch({ type: "logout" });
+        dispatch({
+          type: "flashMessage",
+          payload: "Invalid username / password",
+        });
       }
       console.log(res);
     } catch (err) {

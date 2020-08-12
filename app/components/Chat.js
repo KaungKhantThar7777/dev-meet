@@ -4,11 +4,9 @@ import { Link } from "react-router-dom";
 import StateContext from "../StateContext";
 import DispatchContext from "../DispatchContext";
 import io from "socket.io-client";
-const socket = io.connect("http://localhost:8080", {
-  transports: ["websocket"],
-});
 
 const Chat = () => {
+  const socket = useRef(null);
   const chatField = useRef(null);
   const chatLog = useRef(null);
   const { isChatOpen, user } = useContext(StateContext);
@@ -25,11 +23,16 @@ const Chat = () => {
   }, [isChatOpen]);
 
   useEffect(() => {
-    socket.on("chatFromServer", (message) => {
+    socket.current = io.connect("http://localhost:8080", {
+      transports: ["websocket"],
+    });
+    socket.current.on("chatFromServer", (message) => {
       setState((draft) => {
         draft.chatMessages.push(message);
       });
     });
+
+    return () => socket.current.disconnect();
   }, []);
 
   useEffect(() => {
@@ -43,7 +46,7 @@ const Chat = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     //send message to server
-    socket.emit("chatFromBrowser", {
+    socket.current.emit("chatFromBrowser", {
       message: state.fieldValue,
       token,
     });
@@ -87,9 +90,7 @@ const Chat = () => {
             return (
               <div className="chat-self" key={index}>
                 <div className="chat-message">
-                  <div className="chat-message-inner">
-                    {messageObj.message}
-                  </div>
+                  <div className="chat-message-inner">{messageObj.message}</div>
                 </div>
                 <img
                   className="chat-avatar avatar-tiny"
@@ -101,10 +102,7 @@ const Chat = () => {
             return (
               <div className="chat-other" key={index}>
                 <Link to={`/profile/${messageObj.username}`}>
-                  <img
-                    className="avatar-tiny"
-                    src={messageObj.avatar}
-                  />
+                  <img className="avatar-tiny" src={messageObj.avatar} />
                 </Link>
                 <div className="chat-message">
                   <div className="chat-message-inner">

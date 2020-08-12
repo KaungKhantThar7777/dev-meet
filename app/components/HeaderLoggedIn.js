@@ -7,6 +7,10 @@ import ReactTooltip from "react-tooltip";
 const HeaderLoggedIn = () => {
   const logout = () => {
     dispatch({ type: "logout" });
+    dispatch({
+      type: "flashMessage",
+      payload: "Successfully Logout",
+    });
   };
   const dispatch = useContext(DispatchContext);
   const { user, unreadChatCount } = useContext(StateContext);

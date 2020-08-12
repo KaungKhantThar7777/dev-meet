@@ -1,11 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense } from "react";
 import ReactDOM from "react-dom";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Link,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Link, Route } from "react-router-dom";
 import Axios from "axios";
 import { useImmerReducer } from "use-immer";
 
@@ -16,18 +11,20 @@ import Home from "./components/Home";
 import Footer from "./components/Footer";
 import About from "./components/About";
 import Terms from "./components/Terms";
-import CreatePost from "./components/CreatePost";
-import ViewSinglePost from "./components/ViewSinglePost";
+const CreatePost = React.lazy(() => import("./components/CreatePost"));
+const ViewSinglePost = React.lazy(() => import("./components/ViewSinglePost"));
+const Search = React.lazy(() => import("./components/Search"));
+const Chat = React.lazy(() => import("./components/Chat"));
+
 import EditPost from "./components/EditPost";
 import FlashMessage from "./components/FlashMessage";
 import Profile from "./components/Profile";
 import NotFound from "./components/NotFound";
-import Search from "./components/Search";
 
 import StateContext from "./StateContext";
 import DispatchContext from "./DispatchContext";
 import { CSSTransition } from "react-transition-group";
-import Chat from "./components/Chat";
+import LoadingDotsIcon from "./components/LoadingDotsIcon";
 
 Axios.defaults.baseURL = "http://localhost:8080";
 
@@ -45,7 +42,7 @@ const Main = () => {
     unreadChatCount: 0,
   };
   const removeFlashMessage = () => {
-    setTimeout(() => dispatch({ type: "flashMessage" }), 2000);
+    setTimeout(() => dispatch({ type: "flashMessage" }), 3000);
   };
   const ourReducer = (draft, action) => {
     switch (action.type) {
@@ -97,6 +94,24 @@ const Main = () => {
       localStorage.removeItem("dev-meet-avatar");
     }
   }, [state.loggedIn]);
+
+  useEffect(() => {
+    if (state.loggedIn) {
+      const checkToken = async () => {
+        const res = await Axios.post("/checkToken", {
+          token: state.user.token,
+        });
+        if (!res.data) {
+          dispatch({ type: "logout" });
+          dispatch({
+            type: "flashMessage",
+            payload: "Your token is Expired. Please login in again",
+          });
+        }
+      };
+      checkToken();
+    }
+  }, []);
   return (
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>
@@ -104,43 +119,35 @@ const Main = () => {
           <FlashMessage />
           <div>
             <Header />
-            <Switch>
-              <Route path="/profile/:username" component={Profile} />
-              <Route
-                exact
-                path="/"
-                render={() =>
-                  state.loggedIn ? <Home /> : <HomeGuest />
-                }
-              />
-              <Route
-                exact
-                path="/create-post"
-                component={CreatePost}
-              />
-              <Route
-                exact
-                path="/posts/:id"
-                component={ViewSinglePost}
-              />
-              <Route
-                exact
-                path="/posts/:id/edit"
-                component={EditPost}
-              />
-              <Route exact path="/about-us" component={About} />
-              <Route exact path="/terms" component={Terms} />
-              <Route component={NotFound} />
-            </Switch>
+            <Suspense fallback={<LoadingDotsIcon />}>
+              <Switch>
+                <Route path="/profile/:username" component={Profile} />
+                <Route
+                  exact
+                  path="/"
+                  render={() => (state.loggedIn ? <Home /> : <HomeGuest />)}
+                />
+                <Route exact path="/create-post" component={CreatePost} />
+                <Route exact path="/posts/:id" component={ViewSinglePost} />
+                <Route exact path="/posts/:id/edit" component={EditPost} />
+                <Route exact path="/about-us" component={About} />
+                <Route exact path="/terms" component={Terms} />
+                <Route component={NotFound} />
+              </Switch>
+            </Suspense>
           </div>
           <CSSTransition
             in={state.isSearchOpen}
             timeout={330}
             classNames="search-overlay"
             unmountOnExit>
-            <Search />
+            <div className="search-overlay">
+              <Suspense fallback="">
+                <Search />
+              </Suspense>
+            </div>
           </CSSTransition>
-          <Chat />
+          <Suspense fallback="">{state.loggedIn && <Chat />}</Suspense>
           <Footer />
         </Router>
       </DispatchContext.Provider>

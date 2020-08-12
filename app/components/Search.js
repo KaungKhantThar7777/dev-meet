@@ -72,12 +72,10 @@ const Search = () => {
     });
   };
   return (
-    <div className="search-overlay">
+    <>
       <div className="search-overlay-top shadow-sm">
         <div className="container container--narrow">
-          <label
-            htmlFor="live-search-field"
-            className="search-overlay-icon">
+          <label htmlFor="live-search-field" className="search-overlay-icon">
             <i className="fas fa-search"></i>
           </label>
           <input
@@ -106,13 +104,11 @@ const Search = () => {
             }></div>
           <div
             className={`live-search-results ${
-              state.show === "results" &&
-              "live-search-results--visible"
+              state.show === "results" && "live-search-results--visible"
             }`}>
             <div className="list-group shadow-sm">
               <div className="list-group-item active">
-                <strong>Search Results</strong> (
-                {state.results.length}{" "}
+                <strong>Search Results</strong> ({state.results.length}{" "}
                 {state.results.length === 1 ? "item" : "items"} found)
               </div>
               {state.results.map((post) => {
@@ -127,7 +123,7 @@ const Search = () => {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
