@@ -7,8 +7,8 @@ import StateContext from "../StateContext";
 import DispatchContext from "../DispatchContext";
 import NotFound from "./NotFound";
 import Axios from "axios";
-import { Modal } from "react-bootstrap";
-const EditPost = () => {
+
+const EditPost = (props) => {
   const { user } = useContext(StateContext);
   const appDispatch = useContext(DispatchContext);
   const initialState = {
@@ -123,11 +123,7 @@ const EditPost = () => {
           type: "flashMessage",
           payload: "Congrats! Post was updated successfully.",
         });
-        setTimeout(() => {
-          appDispatch({
-            type: "flashMessage",
-          });
-        }, 2000);
+        props.history.push(`/posts/${state.id}`);
       }
       fetchPost();
 
@@ -148,11 +144,7 @@ const EditPost = () => {
       type: "flashMessage",
       payload: "You do not have permission to edit this post",
     });
-    setTimeout(() => {
-      appDispatch({
-        type: "flashMessage",
-      });
-    }, 2000);
+
     return <Redirect to="/" />;
   }
   return (

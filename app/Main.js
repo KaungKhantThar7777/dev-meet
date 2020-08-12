@@ -44,6 +44,9 @@ const Main = () => {
     isChatOpen: false,
     unreadChatCount: 0,
   };
+  const removeFlashMessage = () => {
+    setTimeout(() => dispatch({ type: "flashMessage" }), 2000);
+  };
   const ourReducer = (draft, action) => {
     switch (action.type) {
       case "login":
@@ -56,6 +59,7 @@ const Main = () => {
         return;
       case "flashMessage":
         draft.flashMessage = action.payload;
+        removeFlashMessage();
         return;
       case "openSearch":
         draft.isSearchOpen = true;

@@ -34,9 +34,6 @@ const CreatePost = () => {
       type: "flashMessage",
       payload: "Congrats! You created post successfully",
     });
-    setTimeout(() => {
-      dispatch({ type: "flashMessage" });
-    }, 2000);
 
     return <Redirect to={`/posts/${wasSuccess}`} />;
   }
